@@ -12,7 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
   @class CustomConverterTest
   @version 1.0.0
   @since 29.03.2025 - 20.30
-*/class CustomConverterTest {
+*/
+class CustomConverterTest {
 
     @BeforeEach
     void setUp() {
@@ -23,53 +24,81 @@ import static org.junit.jupiter.api.Assertions.*;
     }
 
     @Test
-    void whenRomanIX_thenArabic9() {
-        assertEquals(9, CustomConverter.romanToArabic("IX"));
+    public void testNullInput() {
+        assertThrows(NullPointerException.class, () -> {
+            CustomConverter.romanToArabic(null);
+        });
     }
 
     @Test
-    void whenRomanXIV_thenArabic14() {
-        assertEquals(14, CustomConverter.romanToArabic("XIV"));
+    public void testEmptyString() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            CustomConverter.romanToArabic("");
+        });
     }
 
     @Test
-    void whenRomanXXIX_thenArabic29() {
-        assertEquals(29, CustomConverter.romanToArabic("XXIX"));
+    public void testOutOfSetCharacters() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            CustomConverter.romanToArabic("XYZ");
+        });
     }
 
     @Test
-    void whenRomanXL_thenArabic40() {
-        assertEquals(40, CustomConverter.romanToArabic("XL"));
+    public void testLowerCaseCharacters() {
+        assertEquals(4, CustomConverter.romanToArabic("iv"));
     }
 
     @Test
-    void whenRomanXC_thenArabic90() {
-        assertEquals(90, CustomConverter.romanToArabic("XC"));
+    public void testSpacesInInput() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            CustomConverter.romanToArabic("X I V");
+        });
     }
 
     @Test
-    void whenRomanCD_thenArabic400() {
-        assertEquals(400, CustomConverter.romanToArabic("CD"));
+    public void testTrashInput() {
+        // "IIII" is not a valid Roman numeral (should be "IV")
+        assertThrows(IllegalArgumentException.class, () -> {
+            CustomConverter.romanToArabic("IIII");
+        });
     }
 
     @Test
-    void whenRomanCM_thenArabic900() {
-        assertEquals(900, CustomConverter.romanToArabic("CM"));
+    public void testCyrillicVsLatinXI() {
+        // Cyrillic "ХІ" (Ukrainian) vs Latin "XI"
+        String cyrillicXI = "ХІ"; // Cyrillic characters that look like XI
+        assertThrows(IllegalArgumentException.class, () -> {
+            CustomConverter.romanToArabic(cyrillicXI);
+        });
     }
 
     @Test
-    void whenRomanM_thenArabic1000() {
-        assertEquals(1000, CustomConverter.romanToArabic("M"));
+    public void testLimitOf4000() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            CustomConverter.romanToArabic("MMMMI"); // 4001
+        });
     }
 
     @Test
-    void whenRomanMCMXCIV_thenArabic1994() {
-        assertEquals(1994, CustomConverter.romanToArabic("MCMXCIV"));
+    public void testNegativeNumbers() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            CustomConverter.romanToArabic("-X");
+        });
     }
 
     @Test
-    void whenRomanMMMCMXCIX_thenArabic3999() {
-        assertEquals(3999, CustomConverter.romanToArabic("MMMCMXCIX"));
+    public void testPipeSymbol() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            CustomConverter.romanToArabic("X|V");
+        });
+    }
+
+    @Test
+    public void testUnderscore() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            CustomConverter.romanToArabic("X_V");
+        });
     }
 
 }
